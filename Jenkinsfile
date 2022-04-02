@@ -9,6 +9,7 @@ git branch: 'development', credentialsId: '67257a1b-7645-4426-9719-c9cac7b2b419'
 stage('build'){
 sh "$maven/bin/mvn clean package"
 }
+ /*
  //generate sonarqube report
 stage('sonarqube'){
 sh "$maven/bin/mvn sonar:sonar"
@@ -22,4 +23,5 @@ stage('tomcat'){
     // some block
 }
 }
+*/
 }//node closing
