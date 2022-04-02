@@ -5,6 +5,8 @@ echo "The node is :  ${env.NODE_NAME}"
 echo "The job name is :  ${env.JOB_NAME}"
 echo "The build number is :  ${env.BUILD_NUMBER}"
 echo "The workspace is :  ${env.WORKSPACE}"
+buildName 'Dev -${BUILD_NUMBER}'
+buildDescription 'pipelinescript-scripted way'
 
 
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: '']])//checkout stage
