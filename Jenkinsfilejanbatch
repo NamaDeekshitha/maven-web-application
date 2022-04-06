@@ -1,3 +1,32 @@
+def slackBuildNotification(String buildStatus) {
+ 
+  // build status of null means successful
+    buildStatus =  buildStatus ?: 'SUCCESS'
+   // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} \n Job Name: '${env.JOB_NAME} \n Build Number: [${env.BUILD_NUMBER}]' \n Build URL: (${env.BUILD_URL}) \n  }"
+  
+  
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESS') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary)
+}
+
+
+
 node{
 def maven = tool name: "maven3.8.4"
 
@@ -11,6 +40,10 @@ buildDescription 'pipelinescript-scripted way'
 
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '5', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: '']])//checkout stage
 properties([[$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+
+
+try{
+
 stage('checkout'){
 git branch: 'development', credentialsId: '67257a1b-7645-4426-9719-c9cac7b2b419', url: 'https://github.com/NamaDeekshitha/maven-web-application.git'
 }
@@ -34,4 +67,13 @@ stage('tomcat'){
 }
 }
 */
+}//tryblock closing
+
+catch(e)
+{
+currentBuild.result = "FAILED"
+}
+finally{
+sendslackBuildNotification(currentBuild.result)
+}
 }//node closing
