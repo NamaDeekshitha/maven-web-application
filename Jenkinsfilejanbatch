@@ -45,6 +45,7 @@ properties([[$class: 'JobLocalConfiguration', changeReasonComment: ''], pipeline
 try{
 
 stage('checkout'){
+slackBuildNotification('STARTED')
 git branch: 'development', credentialsId: '67257a1b-7645-4426-9719-c9cac7b2b419', url: 'https://github.com/NamaDeekshitha/maven-web-application.git'
 }
 
